@@ -1,0 +1,29 @@
+local RunService = game:GetService("RunService")
+
+local gui = Instance.new("ScreenGui")
+gui.ResetOnSpawn = false
+gui.Parent = game:GetService("CoreGui")
+
+local label = Instance.new("TextLabel")
+label.Size = UDim2.new(0, 120, 0, 35)
+label.Position = UDim2.new(0, 10, 0, 10)
+label.BackgroundTransparency = 0.3
+label.TextColor3 = Color3.new(1, 1, 1)
+label.TextScaled = true
+label.Parent = gui
+
+local fps = 0
+local frames = 0
+local last = tick()
+
+RunService.RenderStepped:Connect(function()
+	frames += 1
+	if tick() - last >= 1 then
+		fps = frames
+		frames = 0
+		last = tick()
+		label.Text = "FPS: " .. fps
+	end
+end)
+
+settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
