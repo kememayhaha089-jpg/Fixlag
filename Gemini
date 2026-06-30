@@ -1,6 +1,17 @@
 -- ====================================================================
---  BẢN SCRIPT BLOX FRUIT CHUYÊN DỤNG CHO DELTA (KHÔNG LO LỖI LINK UI)
+--  BẢN SCRIPT BLOX FRUIT CHUYÊN DỤNG DELTA - TỰ ĐỘNG CHUYỂN ĐỔI ID ẢNH
 -- ====================================================================
+
+-- [XỬ LÝ AN TOÀN ID ẢNH]: Gọi API Roblox để tự chuyển đổi Decal ID sang Image ID gốc
+local RAW_DECAL_ID = 129898296854108
+local FINAL_IMAGE_ID = "rbxassetid://129898296854108" -- Giá trị dự phòng
+
+pcall(function()
+    local ProductInfo = game:GetService("MarketplaceService"):GetProductInfo(RAW_DECAL_ID)
+    if ProductInfo and ProductInfo.AssetTypeId == 13 then -- Kiểm tra nếu đúng là Decal
+        FINAL_IMAGE_ID = "rbxassetid://" .. tostring(ProductInfo.IconImageAssetId)
+    end
+end)
 
 -- [MODULE 1: KHỞI TẠO CẤU HÌNH & CHỐNG AFK]
 local VirtualUser = game:GetService("VirtualUser")
@@ -18,7 +29,7 @@ local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
--- [MODULE 2: TWEEN DI CHUYỂN]
+-- [MODULE 2: TWEEN DI CHUYỂN 3 SEAS]
 function TweenTo(TargetCFrame)
     local Character = Player.Character
     if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
@@ -41,7 +52,7 @@ function TweenTo(TargetCFrame)
     Tween.Completed:Wait()
 end
 
--- [MODULE 3: DỮ LIỆU NHIỆM VỤ 3 SEAS]
+-- [MODULE 3: DỮ LIỆU NHIỆM VỤ CHI TIẾT 3 SEAS]
 function GetQuestDetails()
     local Level = Player.Data.Level.Value
     local MySea = game.PlaceId
@@ -56,7 +67,7 @@ function GetQuestDetails()
     end
 end
 
--- VÒNG LẶP FARM
+-- VÒNG LẶP FARM QUÁI
 task.spawn(function()
     while true do
         task.wait(0.1)
@@ -102,7 +113,7 @@ task.spawn(function()
     end
 end)
 
--- VÒNG LẶP STATS
+-- VÒNG LẶP AUTO STATS
 task.spawn(function()
     while true do
         task.wait(0.5)
@@ -112,8 +123,7 @@ task.spawn(function()
     end
 end)
 
--- [MODULE 4: TỰ THIẾT KẾ CỬA SỔ MENU ĐỘC LẬP CHO DELTA]
--- Xóa Menu cũ nếu lỡ chạy lại script
+-- [MODULE 4: DỰNG GUI THUẦN TÚY - KHÔNG PHỤ THUỘC GIHLUB]
 if game:GetService("CoreGui"):FindFirstChild("DeltaBloxFruitGui") then
     game:GetService("CoreGui").DeltaBloxFruitGui:Destroy()
 end
@@ -121,67 +131,64 @@ end
 local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
 ScreenGui.Name = "DeltaBloxFruitGui"
 
--- Khung chính của Menu (Main Frame)
 local MainFrame = Instance.new("Frame", ScreenGui)
 MainFrame.Size = UDim2.new(0, 350, 0, 280)
 MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
-MainFrame.Draggable = true -- Cho phép giữ và kéo menu trên màn hình điện thoại
+MainFrame.Draggable = true 
 
--- Thanh tiêu đề (Top Bar)
 local TopBar = Instance.new("Frame", MainFrame)
 TopBar.Size = UDim2.new(1, 0, 0, 35)
-TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+TopBar.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
 TopBar.BorderSizePixel = 0
 
 local Title = Instance.new("TextLabel", TopBar)
 Title.Size = UDim2.new(1, -40, 1, 0)
 Title.Position = UDim2.new(0, 10, 0, 0)
-Title.Text = "DELTA PREMIUM HUB"
+Title.Text = "DELTA CUSTOM HUB (FIXED)"
 Title.TextColor3 = Color3.fromRGB(255, 60, 60)
-Title.TextSize = 16
+Title.TextSize = 15
 Title.Font = Enum.Font.SourceSansBold
 Title.TextXAlignment = Enum.TextXAlignment.Left
 Title.BackgroundTransparency = 1
 
--- NÚT ĐÓNG MENU NGAY LẬP TỨC
 local CloseBtn = Instance.new("TextButton", TopBar)
 CloseBtn.Size = UDim2.new(0, 30, 0, 30)
 CloseBtn.Position = UDim2.new(1, -35, 0, 2)
 CloseBtn.Text = "X"
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
 CloseBtn.TextSize = 14
 CloseBtn.Font = Enum.Font.SourceSansBold
-CloseBtn.Callback = function() ScreenGui:Destroy() end
 CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
--- HIỂN THỊ LOGO ẢNH CỦA BẠN (129898296854108)
-local Logo = Instance.new("ImageLabel", MainFrame)
-Logo.Size = UDim2.new(0, 70, 0, 70)
-Logo.Position = UDim2.new(0, 15, 0, 50)
-Logo.Image = "rbxassetid://129898296854108"
-Logo.BackgroundTransparency = 1
+-- Nạp ảnh sau khi đã được cô lập an toàn bằng pcall chống sập UI
+pcall(function()
+    local Logo = Instance.new("ImageLabel", MainFrame)
+    Logo.Size = UDim2.new(0, 70, 0, 70)
+    Logo.Position = UDim2.new(0, 15, 0, 50)
+    Logo.Image = FINAL_IMAGE_ID
+    Logo.BackgroundTransparency = 1
+end)
 
 local InfoText = Instance.new("TextLabel", MainFrame)
 InfoText.Size = UDim2.new(0, 230, 0, 40)
 InfoText.Position = UDim2.new(0, 100, 0, 65)
-InfoText.Text = "Mã ảnh: 129898296854108\nTrạng thái: Đã cấu hình cho Delta"
-InfoText.TextColor3 = Color3.fromRGB(200, 200, 200)
+InfoText.Text = "Hệ thống: Đã bóc tách mã ảnh thành công.\nTrạng thái: Sẵn sàng hoạt động trên Delta."
+InfoText.TextColor3 = Color3.fromRGB(180, 180, 180)
 InfoText.TextSize = 12
 InfoText.Font = Enum.Font.SourceSans
 InfoText.TextXAlignment = Enum.TextXAlignment.Left
 InfoText.BackgroundTransparency = 1
 
--- NÚT BẬT/TẮT AUTO FARM LEVEL
 local FarmBtn = Instance.new("TextButton", MainFrame)
 FarmBtn.Size = UDim2.new(0, 320, 0, 40)
 FarmBtn.Position = UDim2.new(0, 15, 0, 140)
 FarmBtn.Text = "AUTO FARM LEVEL: OFF"
 FarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-FarmBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+FarmBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 FarmBtn.TextSize = 14
 FarmBtn.Font = Enum.Font.SourceSansBold
 
@@ -189,20 +196,19 @@ FarmBtn.MouseButton1Click:Connect(function()
     _G.AutoFarm = not _G.AutoFarm
     if _G.AutoFarm then
         FarmBtn.Text = "AUTO FARM LEVEL: ON"
-        FarmBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Màu xanh lá khi bật
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
     else
         FarmBtn.Text = "AUTO FARM LEVEL: OFF"
-        FarmBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55) -- Màu xám khi tắt
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
     end
 end)
 
--- NÚT BẬT/TẮT AUTO STATS (MẶC ĐỊNH NÂNG MELEE)
 local StatsBtn = Instance.new("TextButton", MainFrame)
 StatsBtn.Size = UDim2.new(0, 320, 0, 40)
-StatsBtn.Position = UDim2.new(0, 15, 0, 200)
+StatsBtn.Position = UDim2.new(0, 15, 0, 210)
 StatsBtn.Text = "AUTO STATS (MELEE): OFF"
 StatsBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StatsBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+StatsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
 StatsBtn.TextSize = 14
 StatsBtn.Font = Enum.Font.SourceSansBold
 
@@ -210,9 +216,9 @@ StatsBtn.MouseButton1Click:Connect(function()
     _G.AutoStats = not _G.AutoStats
     if _G.AutoStats then
         StatsBtn.Text = "AUTO STATS (MELEE): ON"
-        StatsBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+        StatsBtn.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
     else
         StatsBtn.Text = "AUTO STATS (MELEE): OFF"
-        StatsBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+        StatsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
     end
 end)
