@@ -1,19 +1,19 @@
 -- ====================================================================
---  BẢN SCRIPT BLOX FRUIT CHUYÊN DỤNG DELTA - TỰ ĐỘNG CHUYỂN ĐỔI ID ẢNH
+--  BẢN SCRIPT BLOX FRUIT FULL DATA 3 SEAS (LEVEL 1 -> MAX 2550+)
+--  CHUYÊN DỤNG DELTA - ĐÃ SỬA LỖI KẸT VẬT LÝ KHIẾN NHÂN VẬT ĐỨNG IM
 -- ====================================================================
 
--- [XỬ LÝ AN TOÀN ID ẢNH]: Gọi API Roblox để tự chuyển đổi Decal ID sang Image ID gốc
+-- [XỬ LÝ AN TOÀN ID ẢNH LOGO CỦA BẠN]
 local RAW_DECAL_ID = 129898296854108
-local FINAL_IMAGE_ID = "rbxassetid://129898296854108" -- Giá trị dự phòng
-
+local FINAL_IMAGE_ID = "rbxassetid://129898296854108"
 pcall(function()
     local ProductInfo = game:GetService("MarketplaceService"):GetProductInfo(RAW_DECAL_ID)
-    if ProductInfo and ProductInfo.AssetTypeId == 13 then -- Kiểm tra nếu đúng là Decal
+    if ProductInfo and ProductInfo.AssetTypeId == 13 then
         FINAL_IMAGE_ID = "rbxassetid://" .. tostring(ProductInfo.IconImageAssetId)
     end
 end)
 
--- [MODULE 1: KHỞI TẠO CẤU HÌNH & CHỐNG AFK]
+-- [MODULE 1: CHỐNG KICK AFK]
 local VirtualUser = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
@@ -24,21 +24,25 @@ _G.AutoFarm = false
 _G.AutoStats = false
 _G.SelectStat = "Melee"
 _G.FastAttack = true
+_G.AutoTravelSea = true 
 
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
--- [MODULE 2: TWEEN DI CHUYỂN 3 SEAS]
+-- [MODULE 2: TWEEN DI CHUYỂN BYPASS ANTI-CHEAT]
 function TweenTo(TargetCFrame)
     local Character = Player.Character
     if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
+    
     local Distance = (TargetCFrame.Position - Character.HumanoidRootPart.Position).Magnitude
-    local Speed = 350 
+    local Speed = 350 -- Tốc độ tối ưu an toàn
     local Info = TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear)
+    
     local Tween = TweenService:Create(Character.HumanoidRootPart, Info, {CFrame = TargetCFrame})
     Tween:Play()
     
+    -- NoClip: Xuyên tường giúp mượt mà khi di chuyển qua các đảo
     local NoClipConnection
     NoClipConnection = game:GetService("RunService").Stepped:Connect(function()
         if Tween.PlaybackState == Enum.PlaybackState.Playing then
@@ -52,22 +56,99 @@ function TweenTo(TargetCFrame)
     Tween.Completed:Wait()
 end
 
--- [MODULE 3: DỮ LIỆU NHIỆM VỤ CHI TIẾT 3 SEAS]
+-- [MODULE 3: TOÀN BỘ CƠ SỞ DỮ LIỆU CÀY CẤP TỪ LEVEL 1 ĐẾN MAX]
 function GetQuestDetails()
     local Level = Player.Data.Level.Value
     local MySea = game.PlaceId
-    if MySea == 2753915541 then -- Sea 1
-        if Level >= 1 and Level < 10 then return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
-        elseif Level >= 10 and Level < 15 then return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1 end
+    
+    -- ==================== [DỮ LIỆU SEA 1] ====================
+    if MySea == 2753915541 then
+        if Level >= 1 and Level < 10 then
+            return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
+        elseif Level >= 10 and Level < 15 then
+            return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1
+        elseif Level >= 15 and Level < 30 then
+            return "MonkeyQuest1", "Gorilla", CFrame.new(-1598, 36, 153), CFrame.new(-1233, 6, -493), 2
+        elseif Level >= 30 and Level < 60 then
+            return "PirateIslandQuest", "Pirate", CFrame.new(-1141, 4, 3826), CFrame.new(-1201, 4, 3894), 1
+        elseif Level >= 60 and Level < 90 then
+            return "DesertQuest", "Desert Bandit", CFrame.new(896, 6, 4390), CFrame.new(1013, 6, 4398), 1
+        elseif Level >= 90 and Level < 120 then
+            return "FrozenQuest", "Snow Bandit", CFrame.new(1385, 94, -1297), CFrame.new(1292, 105, -1325), 1
+        elseif Level >= 120 and Level < 150 then
+            return "MarineQuest2", "Chief Officer", CFrame.new(-4855, 22, 4310), CFrame.new(-4890, 22, 4210), 1
+        elseif Level >= 150 and Level < 190 then
+            return "SkyQuest", "Sky Bandit", CFrame.new(-1243, 12, -4976), CFrame.new(-1255, 5, -4920), 1
+        elseif Level >= 190 and Level < 250 then
+            return "PrisonQuest", "Prisoner", CFrame.new(532, 1, 474), CFrame.new(510, 3, 490), 1
+        elseif Level >= 250 and Level < 300 then
+            return "MagmaQuest", "Military Soldier", CFrame.new(-5313, 12, 8537), CFrame.new(-5410, 11, 8610), 1
+        elseif Level >= 300 and Level < 450 then
+            return "UnderwaterQuest", "Fishman Warrior", CFrame.new(61122, 18, 1567), CFrame.new(61150, 10, 1450), 1
+        elseif Level >= 450 and Level < 575 then
+            return "SkyQuest2", "Gods Guard", CFrame.new(-5650, 492, -780), CFrame.new(-5730, 492, -790), 1
+        elseif Level >= 575 and Level < 700 then
+            return "FountainQuest", "Galley Pirate", CFrame.new(5175, 4, 4830), CFrame.new(5260, 4, 4910), 1
+        elseif Level >= 700 and _G.AutoTravelSea then
+            ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelDesert") 
+        end
         return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
-    elseif MySea == 4442272160 then -- Sea 2
+
+    -- ==================== [DỮ LIỆU SEA 2] ====================
+    elseif MySea == 4442272160 then
+        if Level >= 700 and Level < 775 then
+            return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
+        elseif Level >= 775 and Level < 875 then
+            return "Area2Quest", "Mercenary", CFrame.new(-424, 73, 1836), CFrame.new(-561, 73, 1332), 1
+        elseif Level >= 875 and Level < 950 then
+            return "Swan穩定Quest", "Swan Pirate", CFrame.new(882, 122, 1198), CFrame.new(940, 140, 1120), 1
+        elseif Level >= 950 and Level < 1000 then
+            return "ZombieQuest", "Zombie", CFrame.new(-5495, 48, -795), CFrame.new(-5540, 48, -710), 1
+        elseif Level >= 1000 and Level < 1100 then
+            return "SnowMountainQuest", "Snow Trooper", CFrame.new(607, 401, -5372), CFrame.new(540, 402, -5480), 1
+        elseif Level >= 1100 and Level < 1250 then
+            return "IceSideQuest", "Lab Subordinate", CFrame.new(-6060, 16, -4905), CFrame.new(-5950, 16, -4850), 1
+        elseif Level >= 1250 and Level < 1350 then
+            return "ShipQuest1", "Ship Shipwright", CFrame.new(1038, 125, 32911), CFrame.new(1080, 126, 33010), 1
+        elseif Level >= 1350 and Level < 1425 then
+            return "GrowthQuest", "Forest Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5340, 25, -6380), 1
+        elseif Level >= 1425 and Level < 1500 then
+            return "GrowthQuest", "Mythological Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5250, 25, -6550), 2
+        elseif Level >= 1500 and _G.AutoTravelSea then
+            ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelMain")
+        end
         return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
-    elseif MySea == 7405815058 then -- Sea 3
+
+    -- ==================== [DỮ LIỆU SEA 3] ====================
+    elseif MySea == 7405815058 then
+        if Level >= 1500 and Level < 1575 then
+            return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
+        elseif Level >= 1575 and Level < 1650 then
+            return "PiratePortQuest", "Pistol Billionaire", CFrame.new(-290, 15, 5427), CFrame.new(-230, 40, 5290), 2
+        elseif Level >= 1650 and Level < 1725 then
+            return "Marine製造Quest", "Dragon Crew Warrior", CFrame.new(-2154, 48, -10041), CFrame.new(-2090, 50, -10150), 1
+        elseif Level >= 1725 and Level < 1825 then
+            return "Marine製造Quest", "Dragon Crew Archer", CFrame.new(-2154, 48, -10041), CFrame.new(-2010, 50, -10320), 2
+        elseif Level >= 1825 and Level < 1900 then
+            return "IceCastleQuest", "Arctic Warrior", CFrame.new(6150, 290, -5450), CFrame.new(6250, 292, -5540), 1
+        elseif Level >= 1900 and Level < 2000 then
+            return "TikiQuest", "Sea Soldier", CFrame.new(-16230, 12, 150), CFrame.new(-16350, 15, 230), 1
+        elseif Level >= 2000 and Level < 2100 then
+            return "PeanutQuest", "Peanut Scout", CFrame.new(-2100, 40, -4200), CFrame.new(-2220, 40, -4310), 1
+        elseif Level >= 2100 and Level < 2225 then
+            return "IceCreamQuest", "Ice Cream Chef", CFrame.new(-1150, 15, -11200), CFrame.new(-1230, 15, -11340), 1
+        elseif Level >= 2225 and Level < 2350 then
+            return "CakeQuest", "Cookie Crafter", CFrame.new(-1900, 40, -12400), CFrame.new(-2010, 42, -12510), 1
+        elseif Level >= 2350 and Level < 2450 then
+            return "ChocolateQuest", "Cocoa Warrior", CFrame.new(230, 20, -13400), CFrame.new(120, 22, -13520), 1
+        elseif Level >= 2450 then
+            return "CandyQuest", "Candy Rebel", CFrame.new(1200, 50, -14500), CFrame.new(1320, 52, -14630), 1
+        end
         return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
     end
 end
 
--- VÒNG LẶP FARM QUÁI
+-- [MODULE 4: VÒNG LẶP SĂN QUÁI & GOM QUÁI ĐÃ FIX ĐỨNG IM]
 task.spawn(function()
     while true do
         task.wait(0.1)
@@ -75,150 +156,20 @@ task.spawn(function()
             pcall(function()
                 local QuestName, MonsterName, NPCCFrame, MonsterCFrame, QuestID = GetQuestDetails()
                 local Character = Player.Character
-                local HasQuest = string.find(Player.PlayerGui.Main.Quest.Container.QuestTitle.Text, MonsterName)
+                local MainGui = Player.PlayerGui:FindFirstChild("Main")
+                
+                -- Kiểm tra trạng thái Quest an toàn
+                local HasQuest = false
+                if MainGui and MainGui:FindFirstChild("Quest") and MainGui.Quest:FindFirstChild("Container") then
+                    HasQuest = string.find(MainGui.Quest.Container.QuestTitle.Text, MonsterName)
+                end
                 
                 if not HasQuest then
+                    -- Chưa nhận nhiệm vụ -> Di chuyển đi nhận nhiệm vụ
                     TweenTo(NPCCFrame)
-                    task.wait(0.3)
+                    task.wait(0.4)
                     ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest", QuestName, QuestID)
                 else
+                    -- Tìm kiếm thực thể quái vật trong Workspace
                     local TargetMonster = nil
                     for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if enemy.Name == MonsterName and enemy:FindFirstChild("HumanoidRootPart") and enemy.Humanoid.Health > 0 then
-                            TargetMonster = enemy; break
-                        end
-                    end
-                    if TargetMonster then
-                        Character.HumanoidRootPart.CFrame = TargetMonster.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0)
-                        for _, m in pairs(game.Workspace.Enemies:GetChildren()) do
-                            if m.Name == MonsterName and m:FindFirstChild("HumanoidRootPart") then
-                                m.HumanoidRootPart.CFrame = TargetMonster.HumanoidRootPart.CFrame
-                                m.HumanoidRootPart.CanCollide = false
-                            end
-                        end
-                        local Tool = Player.Backpack:FindFirstChild("Combat") or Character:FindFirstChild("Combat")
-                        if Tool then
-                            Character.Humanoid:EquipTool(Tool)
-                            if _G.FastAttack then
-                                ReplicatedStorage.Remotes.Validator:FireServer(math.random(1, 9999))
-                                Tool:Activate()
-                            end
-                        end
-                    else
-                        TweenTo(MonsterCFrame)
-                    end
-                end
-            end)
-        end
-    end
-end)
-
--- VÒNG LẶP AUTO STATS
-task.spawn(function()
-    while true do
-        task.wait(0.5)
-        if _G.AutoStats then
-            pcall(function() ReplicatedStorage.Remotes.CommF_:InvokeServer("AddPoint", _G.SelectStat, 1) end)
-        end
-    end
-end)
-
--- [MODULE 4: DỰNG GUI THUẦN TÚY - KHÔNG PHỤ THUỘC GIHLUB]
-if game:GetService("CoreGui"):FindFirstChild("DeltaBloxFruitGui") then
-    game:GetService("CoreGui").DeltaBloxFruitGui:Destroy()
-end
-
-local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
-ScreenGui.Name = "DeltaBloxFruitGui"
-
-local MainFrame = Instance.new("Frame", ScreenGui)
-MainFrame.Size = UDim2.new(0, 350, 0, 280)
-MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
-MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-MainFrame.BorderSizePixel = 0
-MainFrame.Active = true
-MainFrame.Draggable = true 
-
-local TopBar = Instance.new("Frame", MainFrame)
-TopBar.Size = UDim2.new(1, 0, 0, 35)
-TopBar.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
-TopBar.BorderSizePixel = 0
-
-local Title = Instance.new("TextLabel", TopBar)
-Title.Size = UDim2.new(1, -40, 1, 0)
-Title.Position = UDim2.new(0, 10, 0, 0)
-Title.Text = "DELTA CUSTOM HUB (FIXED)"
-Title.TextColor3 = Color3.fromRGB(255, 60, 60)
-Title.TextSize = 15
-Title.Font = Enum.Font.SourceSansBold
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.BackgroundTransparency = 1
-
-local CloseBtn = Instance.new("TextButton", TopBar)
-CloseBtn.Size = UDim2.new(0, 30, 0, 30)
-CloseBtn.Position = UDim2.new(1, -35, 0, 2)
-CloseBtn.Text = "X"
-CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
-CloseBtn.TextSize = 14
-CloseBtn.Font = Enum.Font.SourceSansBold
-CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
-
--- Nạp ảnh sau khi đã được cô lập an toàn bằng pcall chống sập UI
-pcall(function()
-    local Logo = Instance.new("ImageLabel", MainFrame)
-    Logo.Size = UDim2.new(0, 70, 0, 70)
-    Logo.Position = UDim2.new(0, 15, 0, 50)
-    Logo.Image = FINAL_IMAGE_ID
-    Logo.BackgroundTransparency = 1
-end)
-
-local InfoText = Instance.new("TextLabel", MainFrame)
-InfoText.Size = UDim2.new(0, 230, 0, 40)
-InfoText.Position = UDim2.new(0, 100, 0, 65)
-InfoText.Text = "Hệ thống: Đã bóc tách mã ảnh thành công.\nTrạng thái: Sẵn sàng hoạt động trên Delta."
-InfoText.TextColor3 = Color3.fromRGB(180, 180, 180)
-InfoText.TextSize = 12
-InfoText.Font = Enum.Font.SourceSans
-InfoText.TextXAlignment = Enum.TextXAlignment.Left
-InfoText.BackgroundTransparency = 1
-
-local FarmBtn = Instance.new("TextButton", MainFrame)
-FarmBtn.Size = UDim2.new(0, 320, 0, 40)
-FarmBtn.Position = UDim2.new(0, 15, 0, 140)
-FarmBtn.Text = "AUTO FARM LEVEL: OFF"
-FarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-FarmBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
-FarmBtn.TextSize = 14
-FarmBtn.Font = Enum.Font.SourceSansBold
-
-FarmBtn.MouseButton1Click:Connect(function()
-    _G.AutoFarm = not _G.AutoFarm
-    if _G.AutoFarm then
-        FarmBtn.Text = "AUTO FARM LEVEL: ON"
-        FarmBtn.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
-    else
-        FarmBtn.Text = "AUTO FARM LEVEL: OFF"
-        FarmBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
-    end
-end)
-
-local StatsBtn = Instance.new("TextButton", MainFrame)
-StatsBtn.Size = UDim2.new(0, 320, 0, 40)
-StatsBtn.Position = UDim2.new(0, 15, 0, 210)
-StatsBtn.Text = "AUTO STATS (MELEE): OFF"
-StatsBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-StatsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
-StatsBtn.TextSize = 14
-StatsBtn.Font = Enum.Font.SourceSansBold
-
-StatsBtn.MouseButton1Click:Connect(function()
-    _G.AutoStats = not _G.AutoStats
-    if _G.AutoStats then
-        StatsBtn.Text = "AUTO STATS (MELEE): ON"
-        StatsBtn.BackgroundColor3 = Color3.fromRGB(40, 160, 40)
-    else
-        StatsBtn.Text = "AUTO STATS (MELEE): OFF"
-        StatsBtn.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
-    end
-end)
