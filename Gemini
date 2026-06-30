@@ -1,11 +1,8 @@
 -- ====================================================================
---  BẢN SCRIPT BLOX FRUIT FULL SEA ĐÃ TÍCH HỢP ẢNH LOGO: 129898296854108
+--  BẢN SCRIPT BLOX FRUIT CHUYÊN DỤNG CHO DELTA (KHÔNG LO LỖI LINK UI)
 -- ====================================================================
 
--- Ép hệ thống chuyển đổi ID ảnh của bạn sang dạng Content ID chuẩn của Roblox
-local MY_LOGO_ID = "rbxassetid://129898296854108"
-
--- [MODULE 1: ANTI-AFK CHỐNG DISCONNECT]
+-- [MODULE 1: KHỞI TẠO CẤU HÌNH & CHỐNG AFK]
 local VirtualUser = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
@@ -21,15 +18,13 @@ local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
--- [MODULE 2: TWEEN BYPASS ANTI-CHEAT]
+-- [MODULE 2: TWEEN DI CHUYỂN]
 function TweenTo(TargetCFrame)
     local Character = Player.Character
     if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
-    
     local Distance = (TargetCFrame.Position - Character.HumanoidRootPart.Position).Magnitude
     local Speed = 350 
     local Info = TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear)
-    
     local Tween = TweenService:Create(Character.HumanoidRootPart, Info, {CFrame = TargetCFrame})
     Tween:Play()
     
@@ -46,36 +41,22 @@ function TweenTo(TargetCFrame)
     Tween.Completed:Wait()
 end
 
--- [MODULE 3: AUTO FARM LOGIC CHO CẢ 3 SEAS]
+-- [MODULE 3: DỮ LIỆU NHIỆM VỤ 3 SEAS]
 function GetQuestDetails()
     local Level = Player.Data.Level.Value
     local MySea = game.PlaceId
-    
-    -- Khu vực Sea 1
-    if MySea == 2753915541 then
-        if Level >= 1 and Level < 10 then
-            return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
-        elseif Level >= 10 and Level < 15 then
-            return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1
-        end
+    if MySea == 2753915541 then -- Sea 1
+        if Level >= 1 and Level < 10 then return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
+        elseif Level >= 10 and Level < 15 then return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1 end
         return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
-
-    -- Khu vực Sea 2
-    elseif MySea == 4442272160 then
-        if Level >= 700 and Level < 775 then
-            return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
-        end
+    elseif MySea == 4442272160 then -- Sea 2
         return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
-
-    -- Khu vực Sea 3
-    elseif MySea == 7405815058 then
-        if Level >= 1500 and Level < 1575 then
-            return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
-        end
+    elseif MySea == 7405815058 then -- Sea 3
         return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
     end
 end
 
+-- VÒNG LẶP FARM
 task.spawn(function()
     while true do
         task.wait(0.1)
@@ -93,11 +74,9 @@ task.spawn(function()
                     local TargetMonster = nil
                     for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
                         if enemy.Name == MonsterName and enemy:FindFirstChild("HumanoidRootPart") and enemy.Humanoid.Health > 0 then
-                            TargetMonster = enemy
-                            break
+                            TargetMonster = enemy; break
                         end
                     end
-                    
                     if TargetMonster then
                         Character.HumanoidRootPart.CFrame = TargetMonster.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0)
                         for _, m in pairs(game.Workspace.Enemies:GetChildren()) do
@@ -106,7 +85,6 @@ task.spawn(function()
                                 m.HumanoidRootPart.CanCollide = false
                             end
                         end
-                        
                         local Tool = Player.Backpack:FindFirstChild("Combat") or Character:FindFirstChild("Combat")
                         if Tool then
                             Character.Humanoid:EquipTool(Tool)
@@ -124,56 +102,117 @@ task.spawn(function()
     end
 end)
 
--- [MODULE 4: AUTO STATS WORKER]
+-- VÒNG LẶP STATS
 task.spawn(function()
     while true do
         task.wait(0.5)
         if _G.AutoStats then
-            pcall(function()
-                ReplicatedStorage.Remotes.CommF_:InvokeServer("AddPoint", _G.SelectStat, 1)
-            end)
+            pcall(function() ReplicatedStorage.Remotes.CommF_:InvokeServer("AddPoint", _G.SelectStat, 1) end)
         end
     end
 end)
 
--- [MODULE 5: KHỞI TẠO MENU UI MỚI (KAVO UI) - KHẮC PHỤC LỖI KHÔNG HIỆN MENU]
-local KavoLib = loadstring(game:HttpGet("https://githubusercontent.com"))()
-local Window = KavoLib.CreateLib("⚡ PREMIUM BLOX FRUIT HUB", "BloodTheme") -- Giao diện đỏ đen cực ngầu
+-- [MODULE 4: TỰ THIẾT KẾ CỬA SỔ MENU ĐỘC LẬP CHO DELTA]
+-- Xóa Menu cũ nếu lỡ chạy lại script
+if game:GetService("CoreGui"):FindFirstChild("DeltaBloxFruitGui") then
+    game:GetService("CoreGui").DeltaBloxFruitGui:Destroy()
+end
 
--- Tạo một khu vực hiển thị hình ảnh Logo của bạn ngay trên Menu chính
-local MainTab = Window:NewTab("Tổng Quan")
-local InfoSection = MainTab:NewSection("Thông Tin Bản Quyền")
+local ScreenGui = Instance.new("ScreenGui", game:GetService("CoreGui"))
+ScreenGui.Name = "DeltaBloxFruitGui"
 
--- Đưa ảnh của bạn vào UI dưới dạng nhãn hiển thị hình ảnh
-pcall(function()
-    local ImageLabel = Instance.new("ImageLabel")
-    ImageLabel.Size = UDim2.new(0, 120, 0, 120)
-    ImageLabel.Position = UDim2.new(0.35, 0, 0, 10)
-    ImageLabel.Image = MY_LOGO_ID
-    ImageLabel.BackgroundTransparency = 1
-    -- Tìm khung Core UI của Kavo để chèn ảnh của bạn vào
-    ImageLabel.Parent = game:GetService("CoreGui"):WaitForChild("⚡ PREMIUM BLOX FRUIT HUB"):FindFirstChild("Main")
+-- Khung chính của Menu (Main Frame)
+local MainFrame = Instance.new("Frame", ScreenGui)
+MainFrame.Size = UDim2.new(0, 350, 0, 280)
+MainFrame.Position = UDim2.new(0.3, 0, 0.2, 0)
+MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+MainFrame.BorderSizePixel = 0
+MainFrame.Active = true
+MainFrame.Draggable = true -- Cho phép giữ và kéo menu trên màn hình điện thoại
+
+-- Thanh tiêu đề (Top Bar)
+local TopBar = Instance.new("Frame", MainFrame)
+TopBar.Size = UDim2.new(1, 0, 0, 35)
+TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
+TopBar.BorderSizePixel = 0
+
+local Title = Instance.new("TextLabel", TopBar)
+Title.Size = UDim2.new(1, -40, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.Text = "DELTA PREMIUM HUB"
+Title.TextColor3 = Color3.fromRGB(255, 60, 60)
+Title.TextSize = 16
+Title.Font = Enum.Font.SourceSansBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.BackgroundTransparency = 1
+
+-- NÚT ĐÓNG MENU NGAY LẬP TỨC
+local CloseBtn = Instance.new("TextButton", TopBar)
+CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+CloseBtn.Position = UDim2.new(1, -35, 0, 2)
+CloseBtn.Text = "X"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(200, 50, 50)
+CloseBtn.TextSize = 14
+CloseBtn.Font = Enum.Font.SourceSansBold
+CloseBtn.Callback = function() ScreenGui:Destroy() end
+CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
+
+-- HIỂN THỊ LOGO ẢNH CỦA BẠN (129898296854108)
+local Logo = Instance.new("ImageLabel", MainFrame)
+Logo.Size = UDim2.new(0, 70, 0, 70)
+Logo.Position = UDim2.new(0, 15, 0, 50)
+Logo.Image = "rbxassetid://129898296854108"
+Logo.BackgroundTransparency = 1
+
+local InfoText = Instance.new("TextLabel", MainFrame)
+InfoText.Size = UDim2.new(0, 230, 0, 40)
+InfoText.Position = UDim2.new(0, 100, 0, 65)
+InfoText.Text = "Mã ảnh: 129898296854108\nTrạng thái: Đã cấu hình cho Delta"
+InfoText.TextColor3 = Color3.fromRGB(200, 200, 200)
+InfoText.TextSize = 12
+InfoText.Font = Enum.Font.SourceSans
+InfoText.TextXAlignment = Enum.TextXAlignment.Left
+InfoText.BackgroundTransparency = 1
+
+-- NÚT BẬT/TẮT AUTO FARM LEVEL
+local FarmBtn = Instance.new("TextButton", MainFrame)
+FarmBtn.Size = UDim2.new(0, 320, 0, 40)
+FarmBtn.Position = UDim2.new(0, 15, 0, 140)
+FarmBtn.Text = "AUTO FARM LEVEL: OFF"
+FarmBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+FarmBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+FarmBtn.TextSize = 14
+FarmBtn.Font = Enum.Font.SourceSansBold
+
+FarmBtn.MouseButton1Click:Connect(function()
+    _G.AutoFarm = not _G.AutoFarm
+    if _G.AutoFarm then
+        FarmBtn.Text = "AUTO FARM LEVEL: ON"
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50) -- Màu xanh lá khi bật
+    else
+        FarmBtn.Text = "AUTO FARM LEVEL: OFF"
+        FarmBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55) -- Màu xám khi tắt
+    end
 end)
 
-InfoSection:NewLabel("Ảnh cấu hình thành công ID: 129898296854108")
+-- NÚT BẬT/TẮT AUTO STATS (MẶC ĐỊNH NÂNG MELEE)
+local StatsBtn = Instance.new("TextButton", MainFrame)
+StatsBtn.Size = UDim2.new(0, 320, 0, 40)
+StatsBtn.Position = UDim2.new(0, 15, 0, 200)
+StatsBtn.Text = "AUTO STATS (MELEE): OFF"
+StatsBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+StatsBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+StatsBtn.TextSize = 14
+StatsBtn.Font = Enum.Font.SourceSansBold
 
--- CÁC TAB CHỨC NĂNG CÀY CUỐC
-local FarmSection = Window:NewTab("Auto Farm"):NewSection("Cày Cấp")
-
-FarmSection:NewToggle("Bật Auto Farm Level", "Tự động chạy đa bản đồ 3 Sea", function(state)
-    _G.AutoFarm = state
-end)
-
-FarmSection:NewToggle("Đấm Siêu Tốc (Fast Attack)", "Xóa hoạt ảnh đấm để tăng tốc sát thương", function(state)
-    _G.FastAttack = state
-end)
-
-local StatsSection = Window:NewTab("Auto Stats"):NewSection("Nâng Chỉ Số")
-
-StatsSection:NewDropdown("Chọn Thuộc Tính", "Chọn điểm cần nâng", {"Melee", "Defense", "Sword", "Demon Fruit"}, function(currentOption)
-    _G.SelectStat = currentOption
-end)
-
-StatsSection:NewToggle("Bật Tự Động Nâng Điểm", "Tự cộng điểm ngay khi lên cấp", function(state)
-    _G.AutoStats = state
+StatsBtn.MouseButton1Click:Connect(function()
+    _G.AutoStats = not _G.AutoStats
+    if _G.AutoStats then
+        StatsBtn.Text = "AUTO STATS (MELEE): ON"
+        StatsBtn.BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+    else
+        StatsBtn.Text = "AUTO STATS (MELEE): OFF"
+        StatsBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+    end
 end)
