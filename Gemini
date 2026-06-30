@@ -1,42 +1,53 @@
 -- ====================================================================
---  BẢN SCRIPT BLOX FRUIT KHÔNG LỖI - CHUYÊN DỤNG CHO DELTA EXECUTOR
---  HỖ TRỢ FULL LEVEL 1 -> MAX 2550+ (CẢ 3 SEAS)
+--  BLOX FRUITS FULL DATA 3 SEAS (LEVEL 1 -> MAX 2550+)
+--  REMASTERED ENGLISH COMPLIANCE VERSION FOR DELTA
 -- ====================================================================
 
--- Tự động kích hoạt tính năng ngay khi bấm chạy
-_G.AutoFarm = true
-_G.AutoStats = true
+-- [MODULE 1: RECONCILE ASSIGNED IMAGE ASSET]
+local RAW_DECAL_ID = 129898296854108
+local FINAL_IMAGE_ID = "rbxassetid://129898296854108"
+
+pcall(function()
+    local ProductInfo = game:GetService("MarketplaceService"):GetProductInfo(RAW_DECAL_ID)
+    if ProductInfo and ProductInfo.AssetTypeId == 13 then
+        FINAL_IMAGE_ID = "rbxassetid://" .. tostring(ProductInfo.IconImageAssetId)
+    end
+end)
+
+-- [MODULE 2: ANTI-AFK & INITIALIZATION]
+local VirtualUser = game:GetService("VirtualUser")
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    VirtualUser:CaptureController()
+    VirtualUser:ClickButton2(Vector2.new(0,0))
+end)
+
+_G.AutoFarm = false
+_G.AutoStats = false
 _G.SelectStat = "Melee"
+_G.FastAttack = true
+_G.AutoTravelSea = true 
 
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 
--- [MODULE 1: FIX LỖI DI CHUYỂN - TWEEN ENGINE MƯỢT MÀ]
+-- [MODULE 3: RE-ENGINEERED SMOOTH TWEEN NETWORK]
 function TweenTo(TargetCFrame)
     local Character = Player.Character
     if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
     
-    -- Nếu khoảng cách quá gần thì dịch chuyển luôn để tiết kiệm thời gian
     local Distance = (TargetCFrame.Position - Character.HumanoidRootPart.Position).Magnitude
-    if Distance < 20 then
-        Character.HumanoidRootPart.CFrame = TargetCFrame
-        return
-    end
+    if Distance < 5 then Character.HumanoidRootPart.CFrame = TargetCFrame return end
     
-    local Speed = 300 -- Tốc độ tối ưu an toàn nhất cho Delta
+    local Speed = 325 -- Safe velocity threshold to prevent server desync kick
     local Info = TweenInfo.new(Distance / Speed, Enum.EasingStyle.Linear)
+    
     local Tween = TweenService:Create(Character.HumanoidRootPart, Info, {CFrame = TargetCFrame})
     Tween:Play()
     
-    -- Xuyên tường (NoClip) an toàn bằng cách tắt va chạm trực tiếp
     local NoClipConnection
-    NoClipConnection = RunService.Stepped:Connect(function()
+    NoClipConnection = game:GetService("RunService").Stepped:Connect(function()
         if Tween.PlaybackState == Enum.PlaybackState.Playing then
-            if Character:FindFirstChild("HumanoidRootPart") then
-                Character.HumanoidRootPart.Velocity = Vector3.new(0,0,0)
-            end
             for _, part in pairs(Character:GetChildren()) do
                 if part:IsA("BasePart") then part.CanCollide = false end
             end
@@ -47,61 +58,108 @@ function TweenTo(TargetCFrame)
     Tween.Completed:Wait()
 end
 
--- [MODULE 2: FULL DATA DATABASE 3 SEAS TỪ LEVEL 1 ĐẾN MAX]
+-- [MODULE 4: UNIVERSAL SEAS LIFECYCLE REALLOCATION]
 function GetQuestDetails()
     local Level = Player.Data.Level.Value
-    local MySea = game.PlaceId
+    local MySeaIndex = 1
     
-    -- --- [DATA SEA 1] ---
-    if MySea == 2753915541 then
-        if Level >= 1 and Level < 10 then return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
-        elseif Level >= 10 and Level < 15 then return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1
-        elseif Level >= 15 and Level < 30 then return "MonkeyQuest1", "Gorilla", CFrame.new(-1598, 36, 153), CFrame.new(-1233, 6, -493), 2
-        elseif Level >= 30 and Level < 60 then return "PirateIslandQuest", "Pirate", CFrame.new(-1141, 4, 3826), CFrame.new(-1201, 4, 3894), 1
-        elseif Level >= 60 and Level < 90 then return "DesertQuest", "Desert Bandit", CFrame.new(896, 6, 4390), CFrame.new(1013, 6, 4398), 1
-        elseif Level >= 90 and Level < 120 then return "FrozenQuest", "Snow Bandit", CFrame.new(1385, 94, -1297), CFrame.new(1292, 105, -1325), 1
-        elseif Level >= 120 and Level < 150 then return "MarineQuest2", "Chief Officer", CFrame.new(-4855, 22, 4310), CFrame.new(-4890, 22, 4210), 1
-        elseif Level >= 150 and Level < 190 then return "SkyQuest", "Sky Bandit", CFrame.new(-1243, 12, -4976), CFrame.new(-1255, 5, -4920), 1
-        elseif Level >= 190 and Level < 250 then return "PrisonQuest", "Prisoner", CFrame.new(532, 1, 474), CFrame.new(510, 3, 490), 1
-        elseif Level >= 250 and Level < 300 then return "MagmaQuest", "Military Soldier", CFrame.new(-5313, 12, 8537), CFrame.new(-5410, 11, 8610), 1
-        elseif Level >= 300 and Level < 450 then return "UnderwaterQuest", "Fishman Warrior", CFrame.new(61122, 18, 1567), CFrame.new(61150, 10, 1450), 1
-        elseif Level >= 450 and Level < 575 then return "SkyQuest2", "Gods Guard", CFrame.new(-5650, 492, -780), CFrame.new(-5730, 492, -790), 1
-        elseif Level >= 575 and Level < 700 then return "FountainQuest", "Galley Pirate", CFrame.new(5175, 4, 4830), CFrame.new(5260, 4, 4910), 1
-        elseif Level >= 700 then ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelDesert") end
+    -- Detect accurate active world topology based on current geometry
+    if game.Workspace:FindFirstChild("Sea2_Map") or game.PlaceId == 4442272160 then
+        MySeaIndex = 2
+    elseif game.Workspace:FindFirstChild("Sea3_Map") or game.PlaceId == 7405815058 then
+        MySeaIndex = 3
+    end
+    
+    -- ==================== [SEA 1 DATABASE] ====================
+    if MySeaIndex == 1 then
+        if Level >= 1 and Level < 10 then
+            return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
+        elseif Level >= 10 and Level < 15 then
+            return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1
+        elseif Level >= 15 and Level < 30 then
+            return "MonkeyQuest1", "Gorilla", CFrame.new(-1598, 36, 153), CFrame.new(-1233, 6, -493), 2
+        elseif Level >= 30 and Level < 60 then
+            return "PirateIslandQuest", "Pirate", CFrame.new(-1141, 4, 3826), CFrame.new(-1201, 4, 3894), 1
+        elseif Level >= 60 and Level < 90 then
+            return "DesertQuest", "Desert Bandit", CFrame.new(896, 6, 4390), CFrame.new(1013, 6, 4398), 1
+        elseif Level >= 90 and Level < 120 then
+            return "FrozenQuest", "Snow Bandit", CFrame.new(1385, 94, -1297), CFrame.new(1292, 105, -1325), 1
+        elseif Level >= 120 and Level < 150 then
+            return "MarineQuest2", "Chief Officer", CFrame.new(-4855, 22, 4310), CFrame.new(-4890, 22, 4210), 1
+        elseif Level >= 150 and Level < 190 then
+            return "SkyQuest", "Sky Bandit", CFrame.new(-1243, 12, -4976), CFrame.new(-1255, 5, -4920), 1
+        elseif Level >= 190 and Level < 250 then
+            return "PrisonQuest", "Prisoner", CFrame.new(532, 1, 474), CFrame.new(510, 3, 490), 1
+        elseif Level >= 250 and Level < 300 then
+            return "MagmaQuest", "Military Soldier", CFrame.new(-5313, 12, 8537), CFrame.new(-5410, 11, 8610), 1
+        elseif Level >= 300 and Level < 450 then
+            return "UnderwaterQuest", "Fishman Warrior", CFrame.new(61122, 18, 1567), CFrame.new(61150, 10, 1450), 1
+        elseif Level >= 450 and Level < 575 then
+            return "SkyQuest2", "Gods Guard", CFrame.new(-5650, 492, -780), CFrame.new(-5730, 492, -790), 1
+        elseif Level >= 575 and Level < 700 then
+            return "FountainQuest", "Galley Pirate", CFrame.new(5175, 4, 4830), CFrame.new(5260, 4, 4910), 1
+        elseif Level >= 700 and _G.AutoTravelSea then
+            local NetworkRemote = ReplicatedStorage:FindFirstChild("Remotes") and ReplicatedStorage.Remotes:FindFirstChild("CommF_")
+            if NetworkRemote then NetworkRemote:InvokeServer("TravelDesert") end
+        end
         return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
 
-    -- --- [DATA SEA 2] ---
-    elseif MySea == 4442272160 then
-        if Level >= 700 and Level < 775 then return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
-        elseif Level >= 775 and Level < 875 then return "Area2Quest", "Mercenary", CFrame.new(-424, 73, 1836), CFrame.new(-561, 73, 1332), 1
-        elseif Level >= 875 and Level < 950 then return "Swan穩定Quest", "Swan Pirate", CFrame.new(882, 122, 1198), CFrame.new(940, 140, 1120), 1
-        elseif Level >= 950 and Level < 1000 then return "ZombieQuest", "Zombie", CFrame.new(-5495, 48, -795), CFrame.new(-5540, 48, -710), 1
-        elseif Level >= 1000 and Level < 1100 then return "SnowMountainQuest", "Snow Trooper", CFrame.new(607, 401, -5372), CFrame.new(540, 402, -5480), 1
-        elseif Level >= 1100 and Level < 1250 then return "IceSideQuest", "Lab Subordinate", CFrame.new(-6060, 16, -4905), CFrame.new(-5950, 16, -4850), 1
-        elseif Level >= 1250 and Level < 1350 then return "ShipQuest1", "Ship Shipwright", CFrame.new(1038, 125, 32911), CFrame.new(1080, 126, 33010), 1
-        elseif Level >= 1350 and Level < 1425 then return "GrowthQuest", "Forest Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5340, 25, -6380), 1
-        elseif Level >= 1425 and Level < 1500 then return "GrowthQuest", "Mythological Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5250, 25, -6550), 2
-        elseif Level >= 1500 then ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelMain") end
+    -- ==================== [SEA 2 DATABASE] ====================
+    elseif MySeaIndex == 2 then
+        if Level >= 700 and Level < 775 then
+            return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
+        elseif Level >= 775 and Level < 875 then
+            return "Area2Quest", "Mercenary", CFrame.new(-424, 73, 1836), CFrame.new(-561, 73, 1332), 1
+        elseif Level >= 875 and Level < 950 then
+            return "Swan穩定Quest", "Swan Pirate", CFrame.new(882, 122, 1198), CFrame.new(940, 140, 1120), 1
+        elseif Level >= 950 and Level < 1000 then
+            return "ZombieQuest", "Zombie", CFrame.new(-5495, 48, -795), CFrame.new(-5540, 48, -710), 1
+        elseif Level >= 1000 and Level < 1100 then
+            return "SnowMountainQuest", "Snow Trooper", CFrame.new(607, 401, -5372), CFrame.new(540, 402, -5480), 1
+        elseif Level >= 1100 and Level < 1250 then
+            return "IceSideQuest", "Lab Subordinate", CFrame.new(-6060, 16, -4905), CFrame.new(-5950, 16, -4850), 1
+        elseif Level >= 1250 and Level < 1350 then
+            return "ShipQuest1", "Ship Shipwright", CFrame.new(1038, 125, 32911), CFrame.new(1080, 126, 33010), 1
+        elseif Level >= 1350 and Level < 1425 then
+            return "GrowthQuest", "Forest Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5340, 25, -6380), 1
+        elseif Level >= 1425 and Level < 1500 then
+            return "GrowthQuest", "Mythological Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5250, 25, -6550), 2
+        elseif Level >= 1500 and _G.AutoTravelSea then
+            local NetworkRemote = ReplicatedStorage:FindFirstChild("Remotes") and ReplicatedStorage.Remotes:FindFirstChild("CommF_")
+            if NetworkRemote then NetworkRemote:InvokeServer("TravelMain") end
+        end
         return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
 
-    -- --- [DATA SEA 3] ---
-    elseif MySea == 7405815058 then
-        if Level >= 1500 and Level < 1575 then return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
-        elseif Level >= 1575 and Level < 1650 then return "PiratePortQuest", "Pistol Billionaire", CFrame.new(-290, 15, 5427), CFrame.new(-230, 40, 5290), 2
-        elseif Level >= 1650 and Level < 1725 then return "Marine製造Quest", "Dragon Crew Warrior", CFrame.new(-2154, 48, -10041), CFrame.new(-2090, 50, -10150), 1
-        elseif Level >= 1725 and Level < 1825 then return "Marine製造Quest", "Dragon Crew Archer", CFrame.new(-2154, 48, -10041), CFrame.new(-2010, 50, -10320), 2
-        elseif Level >= 1825 and Level < 1900 then return "IceCastleQuest", "Arctic Warrior", CFrame.new(6150, 290, -5450), CFrame.new(6250, 292, -5540), 1
-        elseif Level >= 1900 and Level < 2000 then return "TikiQuest", "Sea Soldier", CFrame.new(-16230, 12, 150), CFrame.new(-16350, 15, 230), 1
-        elseif Level >= 2000 and Level < 2100 then return "PeanutQuest", "Peanut Scout", CFrame.new(-2100, 40, -4200), CFrame.new(-2220, 40, -4310), 1
-        elseif Level >= 2100 and Level < 2225 then return "IceCreamQuest", "Ice Cream Chef", CFrame.new(-1150, 15, -11200), CFrame.new(-1230, 15, -11340), 1
-        elseif Level >= 2225 and Level < 2350 then return "CakeQuest", "Cookie Crafter", CFrame.new(-1900, 40, -12400), CFrame.new(-2010, 42, -12510), 1
-        elseif Level >= 2350 and Level < 2450 then return "ChocolateQuest", "Cocoa Warrior", CFrame.new(230, 20, -13400), CFrame.new(120, 22, -13520), 1
-        elseif Level >= 2450 then return "CandyQuest", "Candy Rebel", CFrame.new(1200, 50, -14500), CFrame.new(1320, 52, -14630), 1 end
+    -- ==================== [SEA 3 DATABASE] ====================
+    elseif MySeaIndex == 3 then
+        if Level >= 1500 and Level < 1575 then
+            return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
+        elseif Level >= 1575 and Level < 1650 then
+            return "PiratePortQuest", "Pistol Billionaire", CFrame.new(-290, 15, 5427), CFrame.new(-230, 40, 5290), 2
+        elseif Level >= 1650 and Level < 1725 then
+            return "Marine製造Quest", "Dragon Crew Warrior", CFrame.new(-2154, 48, -10041), CFrame.new(-2090, 50, -10150), 1
+        elseif Level >= 1725 and Level < 1825 then
+            return "Marine製造Quest", "Dragon Crew Archer", CFrame.new(-2154, 48, -10041), CFrame.new(-2010, 50, -10320), 2
+        elseif Level >= 1825 and Level < 1900 then
+            return "IceCastleQuest", "Arctic Warrior", CFrame.new(6150, 290, -5450), CFrame.new(6250, 292, -5540), 1
+        elseif Level >= 1900 and Level < 2000 then
+            return "TikiQuest", "Sea Soldier", CFrame.new(-16230, 12, 150), CFrame.new(-16350, 15, 230), 1
+        elseif Level >= 2000 and Level < 2100 then
+            return "PeanutQuest", "Peanut Scout", CFrame.new(-2100, 40, -4200), CFrame.new(-2220, 40, -4310), 1
+        elseif Level >= 2100 and Level < 2225 then
+            return "IceCreamQuest", "Ice Cream Chef", CFrame.new(-1150, 15, -11200), CFrame.new(-1230, 15, -11340), 1
+        elseif Level >= 2225 and Level < 2350 then
+            return "CakeQuest", "Cookie Crafter", CFrame.new(-1900, 40, -12400), CFrame.new(-2010, 42, -12510), 1
+        elseif Level >= 2350 and Level < 2450 then
+            return "ChocolateQuest", "Cocoa Warrior", CFrame.new(230, 20, -13400), CFrame.new(120, 22, -13520), 1
+        elseif Level >= 2450 then
+            return "CandyQuest", "Candy Rebel", CFrame.new(1200, 50, -14500), CFrame.new(1320, 52, -14630), 1
+        end
         return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
     end
 end
 
--- [MODULE 3: VÒNG LẶP KHAI THÁC REMOTE ĐÁNH QUÁI (BYPASS ĐƠ MÁY)]
+-- [MODULE 5: MULTI-THREADED ATTACK & GATHER ENGINE]
 task.spawn(function()
     while true do
         task.wait(0.1)
@@ -109,34 +167,11 @@ task.spawn(function()
             pcall(function()
                 local QuestName, MonsterName, NPCCFrame, MonsterCFrame, QuestID = GetQuestDetails()
                 local Character = Player.Character
-                if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
                 
-                -- Đọc trạng thái Quest trực tiếp từ UI hệ thống của Roblox
+                -- Dynamic UI safety tracking fallback
+                local QuestGui = Player.PlayerGui:FindFirstChild("Main") and Player.PlayerGui.Main:FindFirstChild("Quest")
                 local HasQuest = false
-                local QuestUI = Player.PlayerGui:FindFirstChild("Main") and Player.PlayerGui.Main:FindFirstChild("Quest")
-                if QuestUI and QuestUI.Visible and string.find(QuestUI.Container.QuestTitle.Text, MonsterName) then
+                if QuestGui and QuestGui.Visible and string.find(QuestGui.Container.QuestTitle.Text, MonsterName) then
                     HasQuest = true
                 end
                 
-                if not HasQuest then
-                    -- Chưa có Quest -> Bay đi nhận
-                    TweenTo(NPCCFrame)
-                    task.wait(0.5)
-                    ReplicatedStorage.Remotes.CommF_:InvokeServer("StartQuest", QuestName, QuestID)
-                else
-                    -- Đã có Quest -> Tìm quái trong Workspace
-                    local TargetMonster = nil
-                    for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
-                        if enemy.Name == MonsterName and enemy:FindFirstChild("HumanoidRootPart") and enemy.Humanoid.Health > 0 then
-                            TargetMonster = enemy
-                            break
-                        end
-                    end
-                    
-                    if TargetMonster then
-                        -- KHAI THÁC LỖ HỔNG KHÔNG GIAN: Khóa vị trí quái sát vào người
-                        Character.HumanoidRootPart.CFrame = TargetMonster.HumanoidRootPart.CFrame * CFrame.new(0, 10, 0)
-                        
-                        -- Gom quái bãi xung quanh về cùng vị trí để đánh lan nhanh gấp 5 lần
-                        for _, m in pairs(game.Workspace.Enemies:GetChildren()) do
-                            if m.Name == MonsterName and m:FindFirstChild("HumanoidRootPart") then
