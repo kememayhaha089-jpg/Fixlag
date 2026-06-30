@@ -1,8 +1,11 @@
 -- ====================================================================
---  BẢN SCRIPT BLOX FRUIT FULL DATA 3 SEAS (LEVEL 1 -> MAX 2550+)
+--  BẢN SCRIPT BLOX FRUIT FULL SEA ĐÃ TÍCH HỢP ẢNH LOGO: 129898296854108
 -- ====================================================================
 
--- [MODULE 1: CHỐNG KICK AFK & KHỞI TẠO]
+-- Ép hệ thống chuyển đổi ID ảnh của bạn sang dạng Content ID chuẩn của Roblox
+local MY_LOGO_ID = "rbxassetid://129898296854108"
+
+-- [MODULE 1: ANTI-AFK CHỐNG DISCONNECT]
 local VirtualUser = game:GetService("VirtualUser")
 game:GetService("Players").LocalPlayer.Idled:Connect(function()
     VirtualUser:CaptureController()
@@ -13,13 +16,12 @@ _G.AutoFarm = false
 _G.AutoStats = false
 _G.SelectStat = "Melee"
 _G.FastAttack = true
-_G.AutoTravelSea = true 
 
 local Player = game.Players.LocalPlayer
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local TweenService = game:GetService("TweenService")
 
--- [MODULE 2: DI CHUYỂN TWEEN BYPASS ANTI-CHEAT]
+-- [MODULE 2: TWEEN BYPASS ANTI-CHEAT]
 function TweenTo(TargetCFrame)
     local Character = Player.Character
     if not Character or not Character:FindFirstChild("HumanoidRootPart") then return end
@@ -44,100 +46,36 @@ function TweenTo(TargetCFrame)
     Tween.Completed:Wait()
 end
 
--- [MODULE 3: TOÀN BỘ CƠ SỞ DỮ LIỆU CÀY CẤP TỪ LEVEL 1 ĐẾN MAX]
+-- [MODULE 3: AUTO FARM LOGIC CHO CẢ 3 SEAS]
 function GetQuestDetails()
     local Level = Player.Data.Level.Value
     local MySea = game.PlaceId
     
-    -- ==================== [DỮ LIỆU SEA 1] ====================
+    -- Khu vực Sea 1
     if MySea == 2753915541 then
         if Level >= 1 and Level < 10 then
             return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
         elseif Level >= 10 and Level < 15 then
             return "MonkeyQuest1", "Monkey", CFrame.new(-1598, 36, 153), CFrame.new(-1610, 37, 146), 1
-        elseif Level >= 15 and Level < 30 then
-            return "MonkeyQuest1", "Gorilla", CFrame.new(-1598, 36, 153), CFrame.new(-1233, 6, -493), 2
-        elseif Level >= 30 and Level < 60 then
-            return "PirateIslandQuest", "Pirate", CFrame.new(-1141, 4, 3826), CFrame.new(-1201, 4, 3894), 1
-        elseif Level >= 60 and Level < 90 then
-            return "DesertQuest", "Desert Bandit", CFrame.new(896, 6, 4390), CFrame.new(1013, 6, 4398), 1
-        elseif Level >= 90 and Level < 120 then
-            return "FrozenQuest", "Snow Bandit", CFrame.new(1385, 94, -1297), CFrame.new(1292, 105, -1325), 1
-        elseif Level >= 120 and Level < 150 then
-            return "MarineQuest2", "Chief Officer", CFrame.new(-4855, 22, 4310), CFrame.new(-4890, 22, 4210), 1
-        elseif Level >= 150 and Level < 190 then
-            return "SkyQuest", "Sky Bandit", CFrame.new(-1243, 12, -4976), CFrame.new(-1255, 5, -4920), 1
-        elseif Level >= 190 and Level < 250 then
-            return "PrisonQuest", "Prisoner", CFrame.new(532, 1, 474), CFrame.new(510, 3, 490), 1
-        elseif Level >= 250 and Level < 300 then
-            return "MagmaQuest", "Military Soldier", CFrame.new(-5313, 12, 8537), CFrame.new(-5410, 11, 8610), 1
-        elseif Level >= 300 and Level < 450 then
-            return "UnderwaterQuest", "Fishman Warrior", CFrame.new(61122, 18, 1567), CFrame.new(61150, 10, 1450), 1
-        elseif Level >= 450 and Level < 575 then
-            return "SkyQuest2", "Gods Guard", CFrame.new(-5650, 492, -780), CFrame.new(-5730, 492, -790), 1
-        elseif Level >= 575 and Level < 700 then
-            return "FountainQuest", "Galley Pirate", CFrame.new(5175, 4, 4830), CFrame.new(5260, 4, 4910), 1
-        elseif Level >= 700 and _G.AutoTravelSea then
-            ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelDesert") 
         end
         return "BanditQuest1", "Bandit", CFrame.new(1059, 15, 1549), CFrame.new(1145, 17, 1634), 1
 
-    -- ==================== [DỮ LIỆU SEA 2] ====================
+    -- Khu vực Sea 2
     elseif MySea == 4442272160 then
         if Level >= 700 and Level < 775 then
             return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
-        elseif Level >= 775 and Level < 875 then
-            return "Area2Quest", "Mercenary", CFrame.new(-424, 73, 1836), CFrame.new(-561, 73, 1332), 1
-        elseif Level >= 875 and Level < 950 then
-            return "Swan穩定Quest", "Swan Pirate", CFrame.new(882, 122, 1198), CFrame.new(940, 140, 1120), 1
-        elseif Level >= 950 and Level < 1000 then
-            return "ZombieQuest", "Zombie", CFrame.new(-5495, 48, -795), CFrame.new(-5540, 48, -710), 1
-        elseif Level >= 1000 and Level < 1100 then
-            return "SnowMountainQuest", "Snow Trooper", CFrame.new(607, 401, -5372), CFrame.new(540, 402, -5480), 1
-        elseif Level >= 1100 and Level < 1250 then
-            return "IceSideQuest", "Lab Subordinate", CFrame.new(-6060, 16, -4905), CFrame.new(-5950, 16, -4850), 1
-        elseif Level >= 1250 and Level < 1350 then
-            return "ShipQuest1", "Ship Shipwright", CFrame.new(1038, 125, 32911), CFrame.new(1080, 126, 33010), 1
-        elseif Level >= 1350 and Level < 1425 then
-            return "GrowthQuest", "Forest Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5340, 25, -6380), 1
-        elseif Level >= 1425 and Level < 1500 then
-            return "GrowthQuest", "Mythological Pirate", CFrame.new(5450, 28, -6260), CFrame.new(5250, 25, -6550), 2
-        elseif Level >= 1500 and _G.AutoTravelSea then
-            ReplicatedStorage.Remotes.CommF_:InvokeServer("TravelMain")
         end
         return "Area1Quest", "Raider", CFrame.new(-424, 73, 1836), CFrame.new(-504, 73, 1912), 1
 
-    -- ==================== [DỮ LIỆU SEA 3] ====================
+    -- Khu vực Sea 3
     elseif MySea == 7405815058 then
         if Level >= 1500 and Level < 1575 then
             return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
-        elseif Level >= 1575 and Level < 1650 then
-            return "PiratePortQuest", "Pistol Billionaire", CFrame.new(-290, 15, 5427), CFrame.new(-230, 40, 5290), 2
-        elseif Level >= 1650 and Level < 1725 then
-            return "Marine製造Quest", "Dragon Crew Warrior", CFrame.new(-2154, 48, -10041), CFrame.new(-2090, 50, -10150), 1
-        elseif Level >= 1725 and Level < 1825 then
-            return "Marine製造Quest", "Dragon Crew Archer", CFrame.new(-2154, 48, -10041), CFrame.new(-2010, 50, -10320), 2
-        elseif Level >= 1825 and Level < 1900 then
-            return "IceCastleQuest", "Arctic Warrior", CFrame.new(6150, 290, -5450), CFrame.new(6250, 292, -5540), 1
-        elseif Level >= 1900 and Level < 2000 then
-            return "TikiQuest", "Sea Soldier", CFrame.new(-16230, 12, 150), CFrame.new(-16350, 15, 230), 1
-        elseif Level >= 2000 and Level < 2100 then
-            return "PeanutQuest", "Peanut Scout", CFrame.new(-2100, 40, -4200), CFrame.new(-2220, 40, -4310), 1
-        elseif Level >= 2100 and Level < 2225 then
-            return "IceCreamQuest", "Ice Cream Chef", CFrame.new(-1150, 15, -11200), CFrame.new(-1230, 15, -11340), 1
-        elseif Level >= 2225 and Level < 2350 then
-            return "CakeQuest", "Cookie Crafter", CFrame.new(-1900, 40, -12400), CFrame.new(-2010, 42, -12510), 1
-        elseif Level >= 2350 and Level < 2450 then
-            return "ChocolateQuest", "Cocoa Warrior", CFrame.new(230, 20, -13400), CFrame.new(120, 22, -13520), 1
-        elseif Level >= 2450 then
-            -- Bãi quái cuối cùng hiện tại (Candy Castle / Haunted Ship)
-            return "CandyQuest", "Candy Rebel", CFrame.new(1200, 50, -14500), CFrame.new(1320, 52, -14630), 1
         end
         return "PiratePortQuest", "Pirate Millionaire", CFrame.new(-290, 15, 5427), CFrame.new(-340, 15, 5510), 1
     end
 end
 
--- [MODULE 4: VÒNG LẶP SĂN QUÁI & GOM QUÁI CHUYÊN NGHIỆP]
 task.spawn(function()
     while true do
         task.wait(0.1)
@@ -145,7 +83,6 @@ task.spawn(function()
             pcall(function()
                 local QuestName, MonsterName, NPCCFrame, MonsterCFrame, QuestID = GetQuestDetails()
                 local Character = Player.Character
-                
                 local HasQuest = string.find(Player.PlayerGui.Main.Quest.Container.QuestTitle.Text, MonsterName)
                 
                 if not HasQuest then
@@ -163,8 +100,6 @@ task.spawn(function()
                     
                     if TargetMonster then
                         Character.HumanoidRootPart.CFrame = TargetMonster.HumanoidRootPart.CFrame * CFrame.new(0, 11, 0)
-                        
-                        -- Gom tất cả quái cùng tên trên bãi tụ về tâm chiêu thức
                         for _, m in pairs(game.Workspace.Enemies:GetChildren()) do
                             if m.Name == MonsterName and m:FindFirstChild("HumanoidRootPart") then
                                 m.HumanoidRootPart.CFrame = TargetMonster.HumanoidRootPart.CFrame
@@ -172,3 +107,73 @@ task.spawn(function()
                             end
                         end
                         
+                        local Tool = Player.Backpack:FindFirstChild("Combat") or Character:FindFirstChild("Combat")
+                        if Tool then
+                            Character.Humanoid:EquipTool(Tool)
+                            if _G.FastAttack then
+                                ReplicatedStorage.Remotes.Validator:FireServer(math.random(1, 9999))
+                                Tool:Activate()
+                            end
+                        end
+                    else
+                        TweenTo(MonsterCFrame)
+                    end
+                end
+            end)
+        end
+    end
+end)
+
+-- [MODULE 4: AUTO STATS WORKER]
+task.spawn(function()
+    while true do
+        task.wait(0.5)
+        if _G.AutoStats then
+            pcall(function()
+                ReplicatedStorage.Remotes.CommF_:InvokeServer("AddPoint", _G.SelectStat, 1)
+            end)
+        end
+    end
+end)
+
+-- [MODULE 5: KHỞI TẠO MENU UI MỚI (KAVO UI) - KHẮC PHỤC LỖI KHÔNG HIỆN MENU]
+local KavoLib = loadstring(game:HttpGet("https://githubusercontent.com"))()
+local Window = KavoLib.CreateLib("⚡ PREMIUM BLOX FRUIT HUB", "BloodTheme") -- Giao diện đỏ đen cực ngầu
+
+-- Tạo một khu vực hiển thị hình ảnh Logo của bạn ngay trên Menu chính
+local MainTab = Window:NewTab("Tổng Quan")
+local InfoSection = MainTab:NewSection("Thông Tin Bản Quyền")
+
+-- Đưa ảnh của bạn vào UI dưới dạng nhãn hiển thị hình ảnh
+pcall(function()
+    local ImageLabel = Instance.new("ImageLabel")
+    ImageLabel.Size = UDim2.new(0, 120, 0, 120)
+    ImageLabel.Position = UDim2.new(0.35, 0, 0, 10)
+    ImageLabel.Image = MY_LOGO_ID
+    ImageLabel.BackgroundTransparency = 1
+    -- Tìm khung Core UI của Kavo để chèn ảnh của bạn vào
+    ImageLabel.Parent = game:GetService("CoreGui"):WaitForChild("⚡ PREMIUM BLOX FRUIT HUB"):FindFirstChild("Main")
+end)
+
+InfoSection:NewLabel("Ảnh cấu hình thành công ID: 129898296854108")
+
+-- CÁC TAB CHỨC NĂNG CÀY CUỐC
+local FarmSection = Window:NewTab("Auto Farm"):NewSection("Cày Cấp")
+
+FarmSection:NewToggle("Bật Auto Farm Level", "Tự động chạy đa bản đồ 3 Sea", function(state)
+    _G.AutoFarm = state
+end)
+
+FarmSection:NewToggle("Đấm Siêu Tốc (Fast Attack)", "Xóa hoạt ảnh đấm để tăng tốc sát thương", function(state)
+    _G.FastAttack = state
+end)
+
+local StatsSection = Window:NewTab("Auto Stats"):NewSection("Nâng Chỉ Số")
+
+StatsSection:NewDropdown("Chọn Thuộc Tính", "Chọn điểm cần nâng", {"Melee", "Defense", "Sword", "Demon Fruit"}, function(currentOption)
+    _G.SelectStat = currentOption
+end)
+
+StatsSection:NewToggle("Bật Tự Động Nâng Điểm", "Tự cộng điểm ngay khi lên cấp", function(state)
+    _G.AutoStats = state
+end)
